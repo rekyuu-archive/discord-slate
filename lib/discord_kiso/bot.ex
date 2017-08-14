@@ -61,7 +61,7 @@ defmodule DiscordKiso.Bot do
       match "!stopmention", :del_mention_role
       match "!streamrole", :set_stream_announce
       match "!streamany", :del_stream_announce
-      match "!add", :add_custom_command
+      match ["!add", "!set"], :add_custom_command
       match "!del", :del_custom_command
     end
   end
