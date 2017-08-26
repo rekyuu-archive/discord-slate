@@ -91,68 +91,74 @@ defmodule DiscordKiso.Bot do
           0 -> remove_streamer(guild_id, user_id)
           1 ->
             if announce? do
-              stream_title = msg.game.name
-              stream_url = msg.game.url
-              twitch_username = msg.game.url |> String.split("/") |> List.last
-              log_chan = db.log
+              {rate, _} = ExRated.check_rate({guild_id, user_id}, 3_600_000, 1)
 
-              stream_list = query_data("streams", guild_id)
+              case rate do
+                :ok ->
+                  stream_title = msg.game.name
+                  stream_url = msg.game.url
+                  twitch_username = msg.game.url |> String.split("/") |> List.last
+                  log_chan = db.log
 
-              stream_list = case stream_list do
-                nil -> []
-                streams -> streams
-              end
+                  stream_list = query_data("streams", guild_id)
 
-              unless Enum.member?(stream_list, user_id) do
-                store_data("streams", guild_id, stream_list ++ [user_id])
-                alert_roles = db.mention_roles
-                alert_users = db.mention_users
-                role_mention = db.mention
+                  stream_list = case stream_list do
+                    nil -> []
+                    streams -> streams
+                  end
 
-                is_alert? = cond do
-                  Enum.member?(alert_users, user_id) -> true
-                  true -> Enum.member?(for role <- member["roles"] do
-                    {role_id, _} = role |> Integer.parse
-                    Enum.member?(alert_roles, role_id)
-                  end, true)
-                end
+                  unless Enum.member?(stream_list, user_id) do
+                    store_data("streams", guild_id, stream_list ++ [user_id])
+                    alert_roles = db.mention_roles
+                    alert_users = db.mention_users
+                    role_mention = db.mention
 
-                mention = case role_mention do
-                  nil -> "@here"
-                  role -> "<@&#{role}>"
-                end
+                    is_alert? = cond do
+                      Enum.member?(alert_users, user_id) -> true
+                      true -> Enum.member?(for role <- member["roles"] do
+                        {role_id, _} = role |> Integer.parse
+                        Enum.member?(alert_roles, role_id)
+                      end, true)
+                    end
 
-                here = cond do
-                  is_alert? -> " #{mention}"
-                  true -> ""
-                end
+                    mention = case role_mention do
+                      nil -> "@here"
+                      role -> "<@&#{role}>"
+                    end
 
-                message = "**#{username}** is now live on Twitch!#{here}"
+                    here = cond do
+                      is_alert? -> " #{mention}"
+                      true -> ""
+                    end
 
-                twitch_user = "https://api.twitch.tv/kraken/users?login=#{twitch_username}"
-                headers = %{"Accept" => "application/vnd.twitchtv.v5+json", "Client-ID" => "#{Application.get_env(:discord_kiso, :twitch_client_id)}"}
+                    message = "**#{username}** is now live on Twitch!#{here}"
 
-                request = HTTPoison.get!(twitch_user, headers)
-                response = Poison.Parser.parse!((request.body), keys: :atoms)
-                user = response.users |> List.first
+                    twitch_user = "https://api.twitch.tv/kraken/users?login=#{twitch_username}"
+                    headers = %{"Accept" => "application/vnd.twitchtv.v5+json", "Client-ID" => "#{Application.get_env(:discord_kiso, :twitch_client_id)}"}
 
-                user_channel = "https://api.twitch.tv/kraken/channels/#{user._id}"
-                user_info_request = HTTPoison.get!(user_channel, headers)
-                user_info_response = Poison.Parser.parse!((user_info_request.body), keys: :atoms)
+                    request = HTTPoison.get!(twitch_user, headers)
+                    response = Poison.Parser.parse!((request.body), keys: :atoms)
+                    user = response.users |> List.first
 
-                game = case user_info_response.game do
-                  nil -> "streaming on Twitch.tv"
-                  game -> "playing #{game}"
-                end
+                    user_channel = "https://api.twitch.tv/kraken/channels/#{user._id}"
+                    user_info_request = HTTPoison.get!(user_channel, headers)
+                    user_info_response = Poison.Parser.parse!((user_info_request.body), keys: :atoms)
 
-                reply [content: message, embed: %Nostrum.Struct.Embed{
-                  color: 0x4b367c,
-                  title: "#{twitch_username} #{game}",
-                  url: "#{stream_url}",
-                  description: "#{stream_title}",
-                  thumbnail: %Nostrum.Struct.Embed.Thumbnail{url: "#{user.logo}"},
-                  timestamp: "#{DateTime.utc_now() |> DateTime.to_iso8601()}"
-                }], chan: log_chan
+                    game = case user_info_response.game do
+                      nil -> "streaming on Twitch.tv"
+                      game -> "playing #{game}"
+                    end
+
+                    reply [content: message, embed: %Nostrum.Struct.Embed{
+                      color: 0x4b367c,
+                      title: "#{twitch_username} #{game}",
+                      url: "#{stream_url}",
+                      description: "#{stream_title}",
+                      thumbnail: %Nostrum.Struct.Embed.Thumbnail{url: "#{user.logo}"},
+                      timestamp: "#{DateTime.utc_now() |> DateTime.to_iso8601()}"
+                    }], chan: log_chan
+                  end
+                :error -> nil
               end
             end
         end
