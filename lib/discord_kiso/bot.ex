@@ -1,5 +1,6 @@
 defmodule DiscordKiso.Bot do
-  use DiscordKiso.{Module, Commands, Util}
+  use DiscordKiso.{Module, Commands}
+  import DiscordKiso.Util
 
   # Enforcers
   def admin(msg) do
