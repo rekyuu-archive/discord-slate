@@ -25,6 +25,7 @@ defmodule DiscordKiso.Commands.Image do
     }]
   end
 
+  # Fuck you git
   def danbooru(msg) do
     {tag1, tag2} = case length(msg.content |> String.split) do
       1 -> {"order:rank", ""}
