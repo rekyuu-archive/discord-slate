@@ -1,4 +1,4 @@
-defmodule DiscordKiso.Commands.NowLive do
+defmodule DiscordKiso.Commands.Announce do
   import DiscordKiso.{Module, Util}
 
   def announce(msg) do
