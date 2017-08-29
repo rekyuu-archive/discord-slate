@@ -1,5 +1,4 @@
 defmodule DiscordKiso.Util do
-  require Logger
 
   def pull_id(message) do
     id = Regex.run(~r/([0-9])\w+/, message)
@@ -14,6 +13,8 @@ defmodule DiscordKiso.Util do
   def percent(n), do: Enum.random(1..100) <= n
 
   def download(url) do
+    require Logger
+
     filename = url |> String.split("/") |> List.last
     filepath = "_tmp/#{filename}"
 
@@ -25,6 +26,8 @@ defmodule DiscordKiso.Util do
   end
 
   def is_dupe?(source, filename) do
+    require Logger
+
     Logger.info "Checking if #{filename} was last posted..."
     file = query_data("dupes", source)
 
@@ -41,6 +44,8 @@ defmodule DiscordKiso.Util do
   end
 
   def is_image?(url) do
+    require Logger
+
     Logger.log :info, "Checking if #{url} is an image..."
     image_types = [".jpg", ".jpeg", ".gif", ".png", ".mp4"]
     Enum.member?(image_types, Path.extname(url))

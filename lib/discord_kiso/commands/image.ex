@@ -25,7 +25,6 @@ defmodule DiscordKiso.Commands.Image do
     }]
   end
 
-  # Fuck you git
   def danbooru(msg) do
     {tag1, tag2} = case length(msg.content |> String.split) do
       1 -> {"order:rank", ""}
@@ -137,6 +136,8 @@ defmodule DiscordKiso.Commands.Image do
   end
 
   defp danbooru(tag1, tag2) do
+    require Logger
+
     dan = "danbooru.donmai.us"
     blacklist = ["what", "scat", "guro", "gore", "loli", "shota"]
 
