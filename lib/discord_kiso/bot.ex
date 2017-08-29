@@ -1,6 +1,5 @@
 defmodule DiscordKiso.Bot do
-  use DiscordKiso.Module
-  import DiscordKiso.Util
+  use DiscordKiso.{Module, Commands, Util}
 
   # Enforcers
   def admin(msg) do
@@ -173,7 +172,7 @@ defmodule DiscordKiso.Bot do
   end
 
   # Remove an individual who is not streaming
-  def remove_streamer(guild_id, user_id) do
+  defp remove_streamer(guild_id, user_id) do
     stream_list = query_data("streams", guild_id)
 
     stream_list = case stream_list do
@@ -184,11 +183,6 @@ defmodule DiscordKiso.Bot do
     if Enum.member?(stream_list, user_id) do
       store_data("streams", guild_id, stream_list -- [user_id])
     end
-  end
-
-  # Rate limited user commands
-  def help(msg) do
-    reply "I'm Kiso. I'll bestow upon you the absolute best victory.\n\n**Initial setup**\nType `!setup` to add your server to my database. From there you should set tell me what roles can edit my settings by using `!addrole :role`.\n\n**Stream Alerts**\nI will always announce everyone in the server when they go live. Just set which channel to announce to by going to that channel and typing `!setlog`.\n\nTo see a full list of commands, see <https://github.com/rekyuu/discord-kiso>."
   end
 
   def avatar(msg) do
