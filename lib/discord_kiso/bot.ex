@@ -48,18 +48,23 @@ defmodule DiscordKiso.Bot do
 
   defp admin(msg) do
     guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
-    user_id = msg.author.id
-    {:ok, member} = Nostrum.Api.get_member(guild_id, user_id)
 
-    db = query_data("guilds", guild_id)
+    case guild_id do
+      nil -> false
+      guild_id ->
+        user_id = msg.author.id
+        {:ok, member} = Nostrum.Api.get_member(guild_id, user_id)
 
-    cond do
-      db == nil -> true
-      db.admin_roles == [] -> true
-      true -> Enum.member?(for role <- member["roles"] do
-        {role_id, _} = role |> Integer.parse
-        Enum.member?(db.admin_roles, role_id)
-      end, true)
+        db = query_data("guilds", guild_id)
+
+        cond do
+          db == nil -> true
+          db.admin_roles == [] -> true
+          true -> Enum.member?(for role <- member["roles"] do
+            {role_id, _} = role |> Integer.parse
+            Enum.member?(db.admin_roles, role_id)
+          end, true)
+        end
     end
   end
 
