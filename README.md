@@ -25,10 +25,10 @@ That being said, if you ever lose control of me, removing me from your server an
 `!announce here` - Sets the log channel for stream announcements  
 `!announce stop` - Completely stops stream announcements for the server  
   
-`!mention user add :users` - Bot will @here everytime these users go live  
-`!mention user del :users` - Bot will not @here everytime these users go live  
-`!mention role add :roles` - Bot will @here everytime users of this role go live  
-`!mention role del :roles` - Bot will not @here everytime users of this role go  live  
+`!alertfor user add :users` - Bot will @here everytime these users go live  
+`!alertfor user del :users` - Bot will not @here everytime these users go live  
+`!alertfor role add :roles` - Bot will @here everytime users of this role go live  
+`!alertfor role del :roles` - Bot will not @here everytime users of this role go  live  
 `!at role :role` - Bot will mention this role instead of @here for alerted streams  
 `!at here` - Bot will mention @here for alerted streams  
 `!announce role :role` - Bot will only announce streams for members of this role  

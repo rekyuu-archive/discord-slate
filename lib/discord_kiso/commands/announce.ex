@@ -143,7 +143,7 @@ defmodule DiscordKiso.Commands.Announce do
 
     db = Map.put(db, :mention, role)
     store_data("guilds", guild_id, db)
-    reply "Okay, I will alert members of that role."
+    reply "Okay, I will alert members of that role when your selected users or roles go live."
   end
 
   def del_mention_role(data) do
@@ -152,7 +152,7 @@ defmodule DiscordKiso.Commands.Announce do
 
     db = Map.put(db, :mention, nil)
     store_data("guilds", guild_id, db)
-    reply "Okay, any alerts will only be for online users."
+    reply "Okay, I will `@here` when your selected users or roles go live."
   end
 
   def set_stream_announce(data) do
@@ -171,10 +171,10 @@ defmodule DiscordKiso.Commands.Announce do
 
     db = Map.put(db, :stream_role, nil)
     store_data("guilds", guild_id, db)
-    reply "Okay, anyone on this server will be announced when they go live."
+    reply "Okay, everyone on this server will be announced when they go live."
   end
 
-  def mention_here_add_individual_users_or_roles(data) do
+  def alert_add_individual_users_or_roles(data) do
     commands = data.content |> String.split
     guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
@@ -186,7 +186,7 @@ defmodule DiscordKiso.Commands.Announce do
           roles ->
             db = Map.put(db, :mention_roles, db.mention_roles ++ roles |> Enum.uniq)
             store_data("guilds", guild_id, db)
-            reply "Role(s) added. I will mention anyone online when they go live."
+            reply "Role(s) added. I will alert when they go live."
         end
       [_ | ["user" | _users]] ->
         case data.mentions do
@@ -195,13 +195,13 @@ defmodule DiscordKiso.Commands.Announce do
             user_ids = for user <- users, do: user.id
             db = Map.put(db, :mention_users, db.mention_users ++ user_ids |> Enum.uniq)
             store_data("guilds", guild_id, db)
-            reply "User(s) added. I will mention anyone online when they go live."
+            reply "User(s) added. I will alert when they go live."
         end
-      _ -> reply "Usage: `!here user {users}` or `!here role {roles}`"
+      _ -> reply "Usage: `!alertfor user add {users}` or `!alertfor role add {roles}`"
     end
   end
 
-  def mention_here_remove_individual_users_or_roles(data) do
+  def alert_remove_individual_users_or_roles(data) do
     commands = data.content |> String.split
     guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
@@ -224,7 +224,7 @@ defmodule DiscordKiso.Commands.Announce do
             store_data("guilds", guild_id, db)
             reply "User(s) removed, they will no longer alert online members."
         end
-      _ -> reply "Usage: `!here user delete {users}` or `!here role delete {roles}`"
+      _ -> reply "Usage: `!alertfor user del {users}` or `!alertfor role del {roles}`"
     end
   end
 end

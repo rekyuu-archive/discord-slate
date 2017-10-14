@@ -33,8 +33,8 @@ defmodule DiscordKiso.Bot do
       match "!adminrole del", :del_role
       match "!announce here", :set_log_channel
       match "!announce stop", :del_log_channel
-      match ["!mention user add", "!mention role add"], :mention_here_add_individual_users_or_roles
-      match ["!mention user delete", "!mention user del", "!mention user remove", "!mention user rem", "!mention role delete", "!mention role del", "!mention role remove", "!mention role rem"], :mention_here_remove_individual_users_or_roles
+      match ["!alertfor user add", "!alertfor role add"], :alert_add_individual_users_or_roles
+      match ["!alertfor user delete", "!alertfor user del", "!alertfor user remove", "!alertfor user rem", "!alertfor role delete", "!alertfor role del", "!alertfor role remove", "!alertfor role rem"], :alert_remove_individual_users_or_roles
       match "!at role", :set_mention_role
       match "!at here", :del_mention_role
       match "!announce role", :set_stream_announce
