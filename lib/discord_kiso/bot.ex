@@ -1,8 +1,11 @@
 defmodule DiscordKiso.Bot do
-  use DiscordKiso.{Module, Commands}
+  use Din.Module
+  alias Din.Resources.{Channel, Guild}
+
+  use DiscordKiso.Commands
   import DiscordKiso.Util
 
-  handle :MESSAGE_CREATE do
+  handle :message_create do
     match "!help", :help
     match "!avatar", :avatar
     match ["!coin", "!flip"], do: reply Enum.random(["Heads.", "Tails."])
@@ -12,7 +15,6 @@ defmodule DiscordKiso.Bot do
     match "!smug", :smug
     match "!guidance", :souls_message
     match "!safe", :safebooru
-    match_all :custom_command
 
     enforce :nsfw do
       match "!dan", :danbooru
@@ -27,40 +29,42 @@ defmodule DiscordKiso.Bot do
     enforce :admin do
       match ["!ping", "!kiso"], :ping
       match "!setup", :setup
-      match "!addrole", :add_role
-      match "!delrole", :del_role
-      match "!setlog", :set_log_channel
-      match "!stoplog", :del_log_channel
-      match "!addhere", :add_log_user
-      match "!delhere", :del_log_user
-      match "!setmention", :set_mention_role
-      match "!stopmention", :del_mention_role
-      match "!streamrole", :set_stream_announce
-      match "!streamany", :del_stream_announce
-      match ["!add", "!set"], :add_custom_command
-      match "!del", :del_custom_command
+      match "!adminrole add", :add_role
+      match "!adminrole del", :del_role
+      match "!announce here", :set_log_channel
+      match "!announce stop", :del_log_channel
+      match ["!mention user add", "!mention role add"], :mention_here_add_individual_users_or_roles
+      match ["!mention user delete", "!mention user del", "!mention user remove", "!mention user rem", "!mention role delete", "!mention role del", "!mention role remove", "!mention role rem"], :mention_here_remove_individual_users_or_roles
+      match "!at role", :set_mention_role
+      match "!at here", :del_mention_role
+      match "!announce role", :set_stream_announce
+      match "!announce everyone", :del_stream_announce
+      match ["!command add", "!command set", "!command edit"], :add_custom_command
+      match ["!command del", "!command delete", "!command remove", "!command rem"], :del_custom_command
+
+      custom_command(data)
     end
   end
 
-  handle :PRESENCE_UPDATE, do: announce(msg)
+  handle :presence_update, do: announce(data)
 
-  def handle_event(_, state), do: {:ok, state}
+  handle_fallback()
 
-  defp admin(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  defp admin(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
 
     case guild_id do
       nil -> false
       guild_id ->
-        user_id = msg.author.id
-        {:ok, member} = Nostrum.Api.get_member(guild_id, user_id)
+        user_id = data.author.id
+        member = Guild.get_member(guild_id, user_id)
 
         db = query_data("guilds", guild_id)
 
         cond do
           db == nil -> true
           db.admin_roles == [] -> true
-          true -> Enum.member?(for role <- member["roles"] do
+          true -> Enum.member?(for role <- member.roles do
             {role_id, _} = role |> Integer.parse
             Enum.member?(db.admin_roles, role_id)
           end, true)
@@ -68,8 +72,12 @@ defmodule DiscordKiso.Bot do
     end
   end
 
-  defp nsfw(msg) do
-    {:ok, channel} = Nostrum.Api.get_channel(msg.channel_id)
-    channel["nsfw"]
+  defp nsfw(data) do
+    channel = Channel.get(data.channel_id)
+
+    case channel.nsfw do
+      nil -> true
+      nsfw -> nsfw
+    end
   end
 end

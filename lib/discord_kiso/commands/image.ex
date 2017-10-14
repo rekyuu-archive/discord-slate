@@ -1,17 +1,18 @@
 defmodule DiscordKiso.Commands.Image do
-  import DiscordKiso.{Module, Util}
+  import Din.Module
+  import DiscordKiso.Util
 
-  def avatar(msg) do
-    user = msg.mentions |> List.first
+  def avatar(data) do
+    user = data.mentions |> List.first
     url = "https://cdn.discordapp.com/avatars/#{user.id}/#{user.avatar}?size=1024"
 
-    reply [content: "", embed: %Nostrum.Struct.Embed{
+    reply "", embed: %{
       color: 0x00b6b6,
-      image: %Nostrum.Struct.Embed.Image{url: url}
-    }]
+      image: %{url: url}
+    }
   end
 
-  def smug(msg) do
+  def smug(data) do
     url = "https://api.imgur.com/3/album/zSNC1"
     auth = %{"Authorization" => "Client-ID #{Application.get_env(:discord_kiso, :imgur_client_id)}"}
 
@@ -19,60 +20,60 @@ defmodule DiscordKiso.Commands.Image do
     response = Poison.Parser.parse!((request.body), keys: :atoms)
     result = response.data.images |> Enum.random
 
-    reply [content: "", embed: %Nostrum.Struct.Embed{
+    reply "", embed: %{
       color: 0x00b6b6,
-      image: %Nostrum.Struct.Embed.Image{url: result.link}
-    }]
+      image: %{url: result.link}
+    }
   end
 
-  def danbooru(msg) do
-    {tag1, tag2} = case length(msg.content |> String.split) do
+  def danbooru(data) do
+    {tag1, tag2} = case length(data.content |> String.split) do
       1 -> {"order:rank", ""}
       2 ->
-        [_ | [tag1 | _]] = msg.content |> String.split
+        [_ | [tag1 | _]] = data.content |> String.split
         {tag1, ""}
       _ ->
-        [_ | [tag1 | [tag2 | _]]] = msg.content |> String.split
+        [_ | [tag1 | [tag2 | _]]] = data.content |> String.split
         {tag1, tag2}
     end
 
-    reply_danbooru(msg, tag1, tag2)
+    reply_danbooru(data, tag1, tag2)
   end
 
-  def safebooru(msg) do
-    {tag1, tag2} = case length(msg.content |> String.split) do
+  def safebooru(data) do
+    {tag1, tag2} = case length(data.content |> String.split) do
       1 -> {"order:rank", "rating:s"}
       _ ->
-        [_ | [tag1 | _]] = msg.content |> String.split
+        [_ | [tag1 | _]] = data.content |> String.split
         {tag1, "rating:s"}
     end
 
-    reply_danbooru(msg, tag1, tag2)
+    reply_danbooru(data, tag1, tag2)
   end
 
-  def ecchibooru(msg) do
-    {tag1, tag2} = case length(msg.content |> String.split) do
+  def ecchibooru(data) do
+    {tag1, tag2} = case length(data.content |> String.split) do
       1 -> {"order:rank", "rating:q"}
       _ ->
-        [_ | [tag1 | _]] = msg.content |> String.split
+        [_ | [tag1 | _]] = data.content |> String.split
         {tag1, "rating:q"}
     end
 
-    reply_danbooru(msg, tag1, tag2)
+    reply_danbooru(data, tag1, tag2)
   end
 
-  def lewdbooru(msg) do
-    {tag1, tag2} = case length(msg.content |> String.split) do
+  def lewdbooru(data) do
+    {tag1, tag2} = case length(data.content |> String.split) do
       1 -> {"order:rank", "rating:e"}
       _ ->
-        [_ | [tag1 | _]] = msg.content |> String.split
+        [_ | [tag1 | _]] = data.content |> String.split
         {tag1, "rating:e"}
     end
 
-    reply_danbooru(msg, tag1, tag2)
+    reply_danbooru(data, tag1, tag2)
   end
 
-  defp reply_danbooru(msg, tag1, tag2) do
+  defp reply_danbooru(data, tag1, tag2) do
     case tag1 do
       "help" -> reply "Danbooru is a anime imageboard. You can search up to two tags with this command or you can leave it blank for something random. For details on tags, see <https://danbooru.donmai.us/wiki_pages/43037>.\n\n**Available Danbooru commands**\n`!dan :tag1 :tag2` - default command\n`!safe :tag1` - applies `rating:safe` tag\n`!ecchi :tag1` - applies `rating:questionable` tag\n`!lewd :tag1` - applies `rating:explicit` tag\n\n`!safe` will work anywhere, but the other commands can only be done in NSFW channels."
     _ ->
@@ -113,22 +114,22 @@ defmodule DiscordKiso.Commands.Image do
 
           cond do
             Enum.member?(["jpg", "png", "gif"], extension) ->
-              reply [content: "", embed: %Nostrum.Struct.Embed{
+              reply "", embed: %{
                 color: 0x00b6b6,
                 title: "danbooru.donmai.us",
                 url: "https://danbooru.donmai.us/posts/#{post_id}",
                 description: "#{char} - #{copy}\nDrawn by #{artist}",
-                image: %Nostrum.Struct.Embed.Image{url: image}
-              }]
+                image: %{url: image}
+              }
             true ->
               thumbnail = "http://danbooru.donmai.us#{result.preview_file_url}"
-              reply [content: "", embed: %Nostrum.Struct.Embed{
+              reply "", embed: %{
                 color: 0x00b6b6,
                 title: "danbooru.donmai.us",
                 url: "https://danbooru.donmai.us/posts/#{post_id}",
                 description: "#{char} - #{copy}\nDrawn by #{artist}",
-                image: %Nostrum.Struct.Embed.Thumbnail{url: thumbnail}
-              }]
+                image: %{url: thumbnail}
+              }
           end
         message -> reply message
       end
@@ -172,8 +173,8 @@ defmodule DiscordKiso.Commands.Image do
     end
   end
 
-  def nhentai(msg) do
-    [_ | tags] = msg.content |> String.split
+  def nhentai(data) do
+    [_ | tags] = data.content |> String.split
 
     case tags do
       [] -> reply "You must search with at least one tag."
@@ -204,13 +205,13 @@ defmodule DiscordKiso.Commands.Image do
 
           cover = "https://i.nhentai.net/galleries/#{result.media_id}/1.#{filetype}"
 
-          reply [content: "", embed: %Nostrum.Struct.Embed{
-                color: 0x00b6b6,
-                title: result.title.pretty,
-                url: "https://nhentai.net/g/#{result.id}",
-                description: "#{artist}",
-                image: %Nostrum.Struct.Embed.Image{url: cover}
-              }]
+          reply "", embed: %{
+            color: 0x00b6b6,
+            title: result.title.pretty,
+            url: "https://nhentai.net/g/#{result.id}",
+            description: "#{artist}",
+            image: %{url: cover}
+          }
       rescue
         KeyError -> reply "Nothing found!"
       end

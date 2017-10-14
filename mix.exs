@@ -14,7 +14,7 @@ defmodule DiscordKiso.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:ex_rated, :nostrum, :logger, :httpoison],
+    [applications: [:ex_rated, :din, :logger, :httpoison],
      mod: {DiscordKiso, []}
     ]
   end
@@ -29,7 +29,7 @@ defmodule DiscordKiso.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:ex_rated, "~> 1.2"},
-     {:nostrum, git: "https://github.com/Kraigie/nostrum.git"}]
+    [{:din, git: "https://github.com/rekyuu/Din"},
+     {:ex_rated, "~> 1.2"}]
   end
 end

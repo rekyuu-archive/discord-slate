@@ -1,8 +1,8 @@
 defmodule DiscordKiso.Commands.Random do
-  import DiscordKiso.{Module, Util}
+  import Din.Module
 
-  def pick(msg) do
-    [_ | choices] = msg.content |> String.split
+  def pick(data) do
+    [_ | choices] = data.content |> String.split
 
     case choices do
       [] -> nil
@@ -15,8 +15,8 @@ defmodule DiscordKiso.Commands.Random do
     end
   end
 
-  def roll(msg) do
-    [_ | roll] = msg.content |> String.split
+  def roll(data) do
+    [_ | roll] = data.content |> String.split
 
     case roll do
       [] -> reply "#{Enum.random(1..6)}"
@@ -40,7 +40,7 @@ defmodule DiscordKiso.Commands.Random do
     end
   end
 
-  def prediction(msg) do
+  def prediction(data) do
     predictions = [
       "It is certain.",
       "It is decidedly so.",
@@ -67,7 +67,7 @@ defmodule DiscordKiso.Commands.Random do
     reply Enum.random(predictions)
   end
 
-  def souls_message(msg) do
+  def souls_message(data) do
     url = "http://souls.riichi.me/api"
     request = HTTPoison.get!(url)
     response = Poison.Parser.parse!((request.body), keys: :atoms)

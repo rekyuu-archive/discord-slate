@@ -1,11 +1,13 @@
 defmodule DiscordKiso.Commands.Announce do
-  import DiscordKiso.{Module, Util}
+  import Din.Module
+  import DiscordKiso.Util
+  alias Din.Resources.{Channel, Guild}
 
-  def announce(msg) do
-    guild_id = msg.guild_id |> Integer.to_string
-    user_id = msg.user.id
-    {:ok, member} = Nostrum.Api.get_member(guild_id, user_id)
-    username = member["user"]["username"]
+  def announce(data) do
+    guild_id = data.guild_id
+    user_id = data.user.id
+    member = Guild.get_member(guild_id, user_id)
+    username = member.user.username
     db = query_data("guilds", guild_id)
 
     announce? = case db do
@@ -13,16 +15,16 @@ defmodule DiscordKiso.Commands.Announce do
       db ->
         case db.stream_role do
           nil -> true
-          stream_role -> Enum.member?(for role <- member["roles"] do
+          stream_role -> Enum.member?(for role <- member.roles do
             {role_id, _} = role |> Integer.parse
             stream_role == role_id
           end, true)
         end
     end
 
-    if msg.game do
-      if msg.game.type do
-        case msg.game.type do
+    if data.game do
+      if data.game.type do
+        case data.game.type do
           0 -> remove_streamer(guild_id, user_id)
           1 ->
             if announce? do
@@ -30,9 +32,9 @@ defmodule DiscordKiso.Commands.Announce do
 
               case rate do
                 :ok ->
-                  stream_title = msg.game.name
-                  stream_url = msg.game.url
-                  twitch_username = msg.game.url |> String.split("/") |> List.last
+                  stream_title = data.game.name
+                  stream_url = data.game.url
+                  twitch_username = data.game.url |> String.split("/") |> List.last
                   log_chan = db.log
 
                   stream_list = query_data("streams", guild_id)
@@ -84,14 +86,14 @@ defmodule DiscordKiso.Commands.Announce do
                       game -> "playing #{game}"
                     end
 
-                    reply [content: message, embed: %Nostrum.Struct.Embed{
+                    Channel.create_message log_chan, message, embed: %{
                       color: 0x4b367c,
                       title: "#{twitch_username} #{game}",
                       url: "#{stream_url}",
                       description: "#{stream_title}",
-                      thumbnail: %Nostrum.Struct.Embed.Thumbnail{url: "#{user.logo}"},
+                      thumbnail: %{url: "#{user.logo}"},
                       timestamp: "#{DateTime.utc_now() |> DateTime.to_iso8601()}"
-                    }], chan: log_chan
+                    }
                   end
                 :error -> nil
               end
@@ -100,7 +102,7 @@ defmodule DiscordKiso.Commands.Announce do
       end
     end
 
-    unless msg.game, do: remove_streamer(guild_id, user_id)
+    unless data.game, do: remove_streamer(guild_id, user_id)
   end
 
   defp remove_streamer(guild_id, user_id) do
@@ -116,17 +118,17 @@ defmodule DiscordKiso.Commands.Announce do
     end
   end
 
-  def set_log_channel(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def set_log_channel(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
-    db = Map.put(db, :log, msg.channel_id)
+    db = Map.put(db, :log, data.channel_id)
     store_data("guilds", guild_id, db)
     reply "Okay, I will announce streams here!"
   end
 
-  def del_log_channel(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def del_log_channel(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
     db = Map.put(db, :log, nil)
@@ -134,18 +136,18 @@ defmodule DiscordKiso.Commands.Announce do
     reply "Okay, I will no longer announce streams."
   end
 
-  def set_mention_role(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def set_mention_role(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
-    role = msg.mention_roles |> List.first
+    role = data.mention_roles |> List.first
 
     db = Map.put(db, :mention, role)
     store_data("guilds", guild_id, db)
     reply "Okay, I will alert members of that role."
   end
 
-  def del_mention_role(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def del_mention_role(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
     db = Map.put(db, :mention, nil)
@@ -153,18 +155,18 @@ defmodule DiscordKiso.Commands.Announce do
     reply "Okay, any alerts will only be for online users."
   end
 
-  def set_stream_announce(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def set_stream_announce(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
-    role = msg.mention_roles |> List.first
+    role = data.mention_roles |> List.first
 
     db = Map.put(db, :stream_role, role)
     store_data("guilds", guild_id, db)
     reply "Okay, I will only announce streams for members of that role."
   end
 
-  def del_stream_announce(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def del_stream_announce(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
     db = Map.put(db, :stream_role, nil)
@@ -172,14 +174,14 @@ defmodule DiscordKiso.Commands.Announce do
     reply "Okay, anyone on this server will be announced when they go live."
   end
 
-  def add_log_user(msg) do
-    commands = msg.content |> String.split
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def mention_here_add_individual_users_or_roles(data) do
+    commands = data.content |> String.split
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
     case commands do
       [_ | ["role" | _roles]] ->
-        case msg.mention_roles do
+        case data.mention_roles do
           [] -> reply "You need to specify at least one role."
           roles ->
             db = Map.put(db, :mention_roles, db.mention_roles ++ roles |> Enum.uniq)
@@ -187,7 +189,7 @@ defmodule DiscordKiso.Commands.Announce do
             reply "Role(s) added. I will mention anyone online when they go live."
         end
       [_ | ["user" | _users]] ->
-        case msg.mentions do
+        case data.mentions do
           [] -> reply "You need to specify at least one user."
           users ->
             user_ids = for user <- users, do: user.id
@@ -195,34 +197,34 @@ defmodule DiscordKiso.Commands.Announce do
             store_data("guilds", guild_id, db)
             reply "User(s) added. I will mention anyone online when they go live."
         end
-      _ -> reply "Usage: `!addlog user :user` or `!addlog role :role`"
+      _ -> reply "Usage: `!here user {users}` or `!here role {roles}`"
     end
   end
 
-  def del_log_user(msg) do
-    commands = msg.content |> String.split
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def mention_here_remove_individual_users_or_roles(data) do
+    commands = data.content |> String.split
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
     case commands do
       [_ | ["role" | _roles]] ->
-        case msg.mention_roles do
-          [] -> reply "You need to specify at least one role."
+        case data.mention_roles do
+          [] -> reply "You need to specify at least one role to remove."
           roles ->
             db = Map.put(db, :mention_roles, db.mention_roles -- roles |> Enum.uniq)
             store_data("guilds", guild_id, db)
             reply "Role(s) removed, they will no longer alert online members."
         end
       [_ | ["user" | _users]] ->
-        case msg.mentions do
-          [] -> reply "You need to specify at least one user."
+        case data.mentions do
+          [] -> reply "You need to specify at least one user to remove."
           users ->
             user_ids = for user <- users, do: user.id
             db = Map.put(db, :mention_users, db.mention_users -- user_ids |> Enum.uniq)
             store_data("guilds", guild_id, db)
             reply "User(s) removed, they will no longer alert online members."
         end
-      _ -> reply "Usage: `!dellog user :user` or `!dellog role :role`"
+      _ -> reply "Usage: `!here user delete {users}` or `!here role delete {roles}`"
     end
   end
 end

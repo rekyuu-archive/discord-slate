@@ -1,10 +1,12 @@
 defmodule DiscordKiso.Commands.Custom do
-  import DiscordKiso.{Module, Util}
+  import Din.Module
+  import DiscordKiso.Util
+  alias Din.Resources.Channel
 
-  def add_custom_command(msg) do
-    [_ | [command | action]] = msg.content |> String.split
+  def add_custom_command(data) do
+    [_ | [command | action]] = data.content |> String.split
     action = action |> Enum.join(" ")
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+    guild_id = Channel.get(data.channel_id).guild_id
 
     exists = query_data(:commands, "#{guild_id}_!#{command}")
     store_data(:commands, "#{guild_id}_!#{command}", action)
@@ -15,9 +17,9 @@ defmodule DiscordKiso.Commands.Custom do
     end
   end
 
-  def del_custom_command(msg) do
-    [_ | [command | _]] = msg.content |> String.split
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def del_custom_command(data) do
+    [_ | [command | _]] = data.content |> String.split
+    guild_id = Channel.get(data.channel_id).guild_id
     action = query_data(:commands, "#{guild_id}_!#{command}")
 
     case action do
@@ -28,9 +30,9 @@ defmodule DiscordKiso.Commands.Custom do
     end
   end
 
-  def custom_command(msg) do
-    command = msg.content |> String.split |> List.first
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def custom_command(data) do
+    command = data.content |> String.split |> List.first
+    guild_id = Channel.get(data.channel_id).guild_id
     action = query_data(:commands, "#{guild_id}_#{command}")
 
     case action do

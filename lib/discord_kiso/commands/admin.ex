@@ -1,23 +1,25 @@
 defmodule DiscordKiso.Commands.Admin do
-  import DiscordKiso.{Module, Util}
+  import Din.Module
+  import DiscordKiso.Util
+  alias Din.Resources.Channel
 
-  def setup(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def setup(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
 
     cond do
       db == nil ->
         store_data("guilds", guild_id, %{admin_roles: [], log: nil, mention_roles: [], mention_users: [], mention: nil, stream_role: nil})
-        reply "Hey. Be sure to add an admin role to manage my settings using `!addrole <role>`."
-      db.admin_roles == [] -> reply "No admin roles set, anyone can edit my settings! Change this with `!addrole <role>`."
-      true -> reply "I'm ready to sortie!"
+        reply "Hey. Be sure to add an admin role to manage my settings using `!adminrole add <role>`."
+      db.admin_roles == [] -> reply "No admin roles set, anyone can edit my settings! Change this with `!adminrole add <role>`."
+      true -> reply "I'm already set up! Use `!adminrole add/del <role>` to update administrative settings."
     end
   end
 
-  def add_role(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
+  def add_role(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
-    role_ids = msg.mention_roles
+    role_ids = data.mention_roles
 
     case role_ids do
       [] -> reply "You didn't specify any roles."
@@ -35,9 +37,9 @@ defmodule DiscordKiso.Commands.Admin do
     end
   end
 
-  def del_role(msg) do
-    guild_id = Nostrum.Api.get_channel!(msg.channel_id)["guild_id"]
-    role_ids = msg.mention_roles
+  def del_role(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
+    role_ids = data.mention_roles
     db = query_data("guilds", guild_id)
 
     case role_ids do
