@@ -48,7 +48,9 @@ defmodule DiscordKiso.Bot do
 
   handle :presence_update, do: announce(data)
 
-  handle_any do: IO.inspect data
+  handle :guild_delete, do: remove_from_guild(data)
+
+  handle_fallback()
 
   defp admin(data) do
     guild_id = Channel.get(data.channel_id).guild_id

@@ -16,6 +16,11 @@ defmodule DiscordKiso.Commands.Admin do
     end
   end
 
+  def remove_from_guild(data) do
+    guild_id = data.id
+    delete_data("guilds", guild_id)
+  end
+
   def add_role(data) do
     guild_id = Channel.get(data.channel_id).guild_id
     db = query_data("guilds", guild_id)
