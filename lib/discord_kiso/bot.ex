@@ -67,7 +67,7 @@ defmodule DiscordKiso.Bot do
           db == nil -> true
           db.admin_roles == [] -> true
           true -> Enum.member?(for role <- member.roles do
-            Enum.member?(db.admin_roles, role_id)
+            Enum.member?(db.admin_roles, role)
           end, true)
         end
     end
