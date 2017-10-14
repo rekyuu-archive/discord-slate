@@ -1,6 +1,6 @@
 use Mix.Config
 
 config :logger,
-  level: :debug
+  level: :info
 
 import_config "secret.exs"
