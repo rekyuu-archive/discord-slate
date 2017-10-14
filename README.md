@@ -20,22 +20,22 @@ That being said, if you ever lose control of me, removing me from your server an
 
 `!ping`, `!kiso` - Generic ping, outputs debug info to the console  
 `!setup` - Initializes your server to the database  
-`!addrole :roles` - Adds mentioned roles to allow modification to settings  
-`!delrole :roles` - Removes mentioned roles to allow modification to settings  
-`!setlog` - Sets the log channel for stream announcements  
-`!stoplog` - Completely stops stream announcements for the server  
+`!adminrole add :roles` - Adds mentioned roles to allow modification to settings  
+`!adminrole del :roles` - Removes mentioned roles to allow modification to settings  
+`!announce here` - Sets the log channel for stream announcements  
+`!announce stop` - Completely stops stream announcements for the server  
   
-`!addhere user :users` - Bot will @here everytime these users go live  
-`!delhere user :users` - Bot will not @here everytime these users go live  
-`!addhere role :roles` - Bot will @here everytime users of this role go live  
-`!delhere role :roles` - Bot will not @here everytime users of this role go  live  
-`!setmention :role` - Bot will mention this role instead of @here for alerted streams  
-`!stopmention` - Bot will mention @here for alerted streams  
-`!streamrole :role` - Bot will only announce streams for members of this role  
-`!streamany` - Bot will announce streams for everyone on the server  
+`!mention user add :users` - Bot will @here everytime these users go live  
+`!mention user del :users` - Bot will not @here everytime these users go live  
+`!mention role add :roles` - Bot will @here everytime users of this role go live  
+`!mention role del :roles` - Bot will not @here everytime users of this role go  live  
+`!at role :role` - Bot will mention this role instead of @here for alerted streams  
+`!at here` - Bot will mention @here for alerted streams  
+`!announce role :role` - Bot will only announce streams for members of this role  
+`!announce everyone` - Bot will announce streams for everyone on the server  
 
-`!add :command ~text` - Adds a custom command with the given text  
-`!del :command` - Removes a custom command  
+`!command add :command ~text` - Adds a custom command with the given text  
+`!command del :command` - Removes a custom command  
 
 ### General Commands
 

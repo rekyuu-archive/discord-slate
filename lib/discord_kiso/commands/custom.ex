@@ -4,7 +4,7 @@ defmodule DiscordKiso.Commands.Custom do
   alias Din.Resources.Channel
 
   def add_custom_command(data) do
-    [_ | [command | action]] = data.content |> String.split
+    ["!command" | [_ | [command | action]]] = data.content |> String.split
     action = action |> Enum.join(" ")
     guild_id = Channel.get(data.channel_id).guild_id
 
@@ -18,7 +18,7 @@ defmodule DiscordKiso.Commands.Custom do
   end
 
   def del_custom_command(data) do
-    [_ | [command | _]] = data.content |> String.split
+    ["!command" | [_ | [command | _]]] = data.content |> String.split
     guild_id = Channel.get(data.channel_id).guild_id
     action = query_data(:commands, "#{guild_id}_!#{command}")
 
