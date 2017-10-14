@@ -29,17 +29,13 @@ defmodule DiscordKiso.Commands.Admin do
     case role_ids do
       [] -> reply "You didn't specify any roles."
       role_ids ->
-        roles = for role <- role_ids do
-          role |> String.to_integer
-        end
-
         case db.admin_roles do
           [] ->
-            db = Map.put(db, :admin_roles, roles)
+            db = Map.put(db, :admin_roles, role_ids)
             store_data("guilds", guild_id, db)
             reply "Added roles!"
           admin_roles ->
-            db = Map.put(db, :admin_roles, admin_roles ++ roles |> Enum.uniq)
+            db = Map.put(db, :admin_roles, admin_roles ++ role_ids |> Enum.uniq)
             store_data("guilds", guild_id, db)
             reply "Added administrative roles!"
         end
@@ -54,14 +50,10 @@ defmodule DiscordKiso.Commands.Admin do
     case role_ids do
       [] -> reply "You didn't specify any roles."
       role_ids ->
-        roles = for role <- role_ids do
-          role |> String.to_integer
-        end
-
         case db.admin_roles do
           [] -> reply "There aren't any roles to remove..."
           admin_roles ->
-            db = Map.put(db, :admin_roles, admin_roles -- roles |> Enum.uniq)
+            db = Map.put(db, :admin_roles, admin_roles -- role_ids |> Enum.uniq)
             store_data("guilds", guild_id, db)
             reply "Removed administrative roles."
         end

@@ -16,7 +16,6 @@ defmodule DiscordKiso.Commands.Announce do
         case db.stream_role do
           nil -> true
           stream_role -> Enum.member?(for role <- member.roles do
-            {role_id, _} = role |> Integer.parse
             stream_role == role_id
           end, true)
         end
@@ -52,8 +51,7 @@ defmodule DiscordKiso.Commands.Announce do
 
                     is_alert? = cond do
                       Enum.member?(alert_users, user_id) -> true
-                      true -> Enum.member?(for role <- member["roles"] do
-                        {role_id, _} = role |> Integer.parse
+                      true -> Enum.member?(for role <- member.roles do
                         Enum.member?(alert_roles, role_id)
                       end, true)
                     end
