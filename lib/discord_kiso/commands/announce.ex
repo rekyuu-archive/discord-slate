@@ -96,6 +96,7 @@ defmodule DiscordKiso.Commands.Announce do
                 :error -> nil
               end
             end
+          _ -> nil
         end
       end
     end
