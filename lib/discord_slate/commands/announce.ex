@@ -106,6 +106,6 @@ defmodule DiscordSlate.Commands.Announce do
   end
 
   def test_announce(data) do
-    announce()
+    announce(data)
   end
 end
