@@ -107,7 +107,7 @@ defmodule DiscordSlate.Commands.Announce do
 
   def test_announce(data) do
     test_data = data
-    |> Map.put(:game, %{type: 1, name: "Test Announcement %", url: "https://twitch.tv/rekyuus"})
+    |> Map.put(:game, %{type: 1, name: "Test Announcement Speedrun", url: "https://twitch.tv/rekyuus"})
     |> Map.put(:guild_id, Channel.get(data.channel_id).guild_id)
     |> Map.put(:user, data.author)
 
