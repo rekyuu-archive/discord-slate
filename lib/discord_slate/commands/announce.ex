@@ -106,10 +106,12 @@ defmodule DiscordSlate.Commands.Announce do
   end
 
   def test_announce(data) do
-    announce(%{data | game: %{
+    test_data = Map.put(data, :game, %{
       type: 1,
       name: "Test Announcement %",
       url: "https://twitch.tv/twitch"
-    }})
+    })
+
+    announce(test_data)
   end
 end
