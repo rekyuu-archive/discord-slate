@@ -22,8 +22,8 @@ defmodule DiscordSlate.Commands.Announce do
               stream_title = data.game.name
               stream_url = data.game.url
               twitch_username = data.game.url
-                |> String.split("/")
-                |> List.last
+              |> String.split("/")
+              |> List.last
 
               stream_list = case query_data(:streams, guild_id) do
                 nil -> []
@@ -32,9 +32,9 @@ defmodule DiscordSlate.Commands.Announce do
 
               recently_mentioned? = Enum.member?(stream_list, user_id)
               good_title? = ~r/1..%|any%|low%|attempts?|derust(ing)?|de-rust(ing)?|ILs?|indavidual levels?|learning|planning|practice|practicing|races?|routing|rtas?|runs?|speedruns?|TAS(ing)?|[srl]/
-                |> Regex.match?(stream_title)
+              |> Regex.match?(stream_title)
               bad_title? = ~r/blind|casual|design(ing)?|let's plays?|[nosrl]/
-                |> Regex.match?(stream_title)
+              |> Regex.match?(stream_title)
 
               if !recently_mentioned? && good_title? && !bad_title? do
                 twitch_user = "https://api.twitch.tv/kraken/users?login=#{twitch_username}"
@@ -107,9 +107,9 @@ defmodule DiscordSlate.Commands.Announce do
 
   def test_announce(data) do
     test_data = data
-      |> Map.put(:game, %{type: 1, name: "Test Announcement %", url: "https://twitch.tv/rekyuus"})
-      |> Map.put(:guild_id, Channel.get(data.channel_id).guild_id)
-      |> Map.put(:user, data.author)
+    |> Map.put(:game, %{type: 1, name: "Test Announcement %", url: "https://twitch.tv/rekyuus"})
+    |> Map.put(:guild_id, Channel.get(data.channel_id).guild_id)
+    |> Map.put(:user, data.author)
 
     announce(test_data)
   end
