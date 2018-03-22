@@ -31,9 +31,9 @@ defmodule DiscordSlate.Commands.Announce do
               end
 
               recently_mentioned? = Enum.member?(stream_list, user_id)
-              good_title? = ~r/1..%|any%|low%|attempts?|de-?rust(ing)?|ILs?|individual levels?|learning|planning|practice|practicing|races?|routing|rtas?|runs?|speedruns?|TAS(ing)?|\[srl\]/
+              good_title? = ~r/1..%|any%|low%|attempts?|de-?rust(ing)?|ILs?|individual levels?|learning|planning|practice|practicing|races?|routing|rtas?|runs?|speedruns?|TAS(ing)?|\[srl\]/i
               |> Regex.match?(stream_title)
-              bad_title? = ~r/blind|casual|design(ing)?|let's plays?|\[nosrl\]/
+              bad_title? = ~r/blind|casual|design(ing)?|let's plays?|\[nosrl\]/i
               |> Regex.match?(stream_title)
 
               if !recently_mentioned? && good_title? && !bad_title? do
