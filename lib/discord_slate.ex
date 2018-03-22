@@ -1,4 +1,4 @@
-defmodule DiscordKiso do
+defmodule DiscordSlate do
   use Application
   use Supervisor
   require Logger
@@ -7,7 +7,7 @@ defmodule DiscordKiso do
     import Supervisor.Spec
     Logger.info "starting supervisor"
 
-    children = [worker(DiscordKiso.Bot, [])]
+    children = [worker(DiscordSlate.Bot, [])]
     Supervisor.start_link(children, strategy: :one_for_one)
   end
 end

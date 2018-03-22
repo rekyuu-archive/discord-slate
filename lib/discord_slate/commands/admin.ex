@@ -1,7 +1,11 @@
-defmodule DiscordKiso.Commands.Admin do
+defmodule DiscordSlate.Commands.Admin do
   import Din.Module
-  import DiscordKiso.Util
+  import DiscordSlate.Util
   alias Din.Resources.Channel
+
+  def ping(data) do
+    reply "Pong!"
+  end
 
   def setup(data) do
     guild_id = Channel.get(data.channel_id).guild_id
