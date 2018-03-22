@@ -105,7 +105,7 @@ defmodule DiscordSlate.Commands.Announce do
     reply "Okay, I will no longer announce streams."
   end
 
-  def test_announce(data.guild) do
+  def test_announce(data) do
     announce(%{data | game: %{
       type: 1,
       name: "Test Announcement %",
