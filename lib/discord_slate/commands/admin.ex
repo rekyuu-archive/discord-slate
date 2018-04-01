@@ -4,6 +4,7 @@ defmodule DiscordSlate.Commands.Admin do
   alias Din.Resources.Channel
 
   def ping(data) do
+    IO.inspect data
     reply "Pong!"
   end
 
