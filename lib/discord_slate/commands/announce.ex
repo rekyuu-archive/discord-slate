@@ -4,17 +4,18 @@ defmodule DiscordSlate.Commands.Announce do
   alias Din.Resources.{Channel, Guild}
 
   def announce(data) do
-    if data.game && data.game.type do
-      guild_id = data.guild_id
-      user_id = data.user.id
-      member = Guild.get_member(guild_id, user_id)
-      username = member.user.username
-      db = query_data(:guilds, guild_id)
-      
+    db = query_data(:guilds, data.guild_id)
+    member = if data.game && data.game.type do
+      Guild.get_member(data.guild_id, data.user.id)
+    else
+      nil
+    end
+    
+    if data.game && data.game.type do      
       case data.game.type do
-        0 -> remove_streamer(guild_id, user_id)
+        0 -> remove_streamer(data.guild_id, data.user.id)
         1 ->
-          {rate, _} = ExRated.check_rate({guild_id, user_id}, 3_600_000, 1)
+          {rate, _} = ExRated.check_rate({data.guild_id, data.user.id}, 3_600_000, 1)
 
           case rate do
             :ok ->
@@ -25,12 +26,12 @@ defmodule DiscordSlate.Commands.Announce do
               |> String.split("/")
               |> List.last
 
-              stream_list = case query_data(:streams, guild_id) do
+              stream_list = case query_data(:streams, data.guild_id) do
                 nil -> []
                 streams -> streams
               end
 
-              recently_mentioned? = Enum.member?(stream_list, user_id)
+              recently_mentioned? = Enum.member?(stream_list, data.user.id)
               good_title? = ~r/1..%|any%|low%|attempts?|de-?rust(ing)?|ILs?|individual levels?|learning|planning|practice|practicing|races?|routing|rtas?|runs?|speedruns?|TAS(ing)?|\[srl\]/i
               |> Regex.match?(stream_title)
 
@@ -53,8 +54,8 @@ defmodule DiscordSlate.Commands.Announce do
                 user_info_response = Poison.Parser.parse!(user_info_request.body, keys: :atoms)
 
                 if user_info_response.game == "The Legend of Zelda: Breath of the Wild" do
-                  store_data("streams", guild_id, stream_list ++ [user_id])
-                  message = "**#{username}** is now live on Twitch!"
+                  store_data("streams", data.guild_id, stream_list ++ [data.user.id])
+                  message = "**#{member.user.username}** is now live on Twitch!"
 
                   Channel.create_message log_chan, message, embed: %{
                     color: 0x4b367c,
@@ -72,7 +73,7 @@ defmodule DiscordSlate.Commands.Announce do
       end
     end
 
-    unless data.game, do: remove_streamer(guild_id, user_id)
+    unless data.game, do: remove_streamer(data.guild_id, data.user.id)
   end
 
   defp remove_streamer(guild_id, user_id) do
