@@ -4,13 +4,13 @@ defmodule DiscordSlate.Commands.Announce do
   alias Din.Resources.{Channel, Guild}
 
   def announce(data) do
-    guild_id = data.guild_id
-    user_id = data.user.id
-    member = Guild.get_member(guild_id, user_id)
-    username = member.user.username
-    db = query_data(:guilds, guild_id)
-
     if data.game && data.game.type do
+      guild_id = data.guild_id
+      user_id = data.user.id
+      member = Guild.get_member(guild_id, user_id)
+      username = member.user.username
+      db = query_data(:guilds, guild_id)
+      
       case data.game.type do
         0 -> remove_streamer(guild_id, user_id)
         1 ->
