@@ -19,8 +19,6 @@ defmodule DiscordSlate.Bot do
 
   handle :presence_update, do: announce(data)
 
-  handle :guild_delete, do: remove_from_guild(data)
-
   handle_fallback()
 
   defp admin(data) do
