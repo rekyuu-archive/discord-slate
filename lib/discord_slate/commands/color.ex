@@ -2,26 +2,20 @@ defmodule DiscordSlate.Commands.Color do
   import Din.Module
   import DiscordSlate.Util
   alias Din.Resources.{Channel, Guild}
-
-  ["352605883278163989", "479314520695767040"]
-
-  def color_to_id(text) do
-    case String.downcase(text) do
-      "red"    -> 352605883278163989
-      "orange" -> 479314401300578344
-      "yellow" -> 486022292745224203
-      "green"  -> 486022159454699540
-      "blue"   -> 479314520695767040
-      "purple" -> 352603354259521536
-    end
-  end
+  
+  def red, do: "352605883278163989"
+  def orange, do: "352605883278163989"
+  def yellow, do: "352605883278163989"
+  def green, do: "352605883278163989"
+  def blue, do: "352605883278163989"
+  def purple, do: "352605883278163989"
 
   def set_color_red(data) do
     guild_id = Channel.get(data.channel_id).guild_id
     user_data = Guild.get_member(guild_id, data.author.id)
-    remove_colors = ["479314401300578344", "486022292745224203", "486022159454699540", "479314520695767040", "352603354259521536"]
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    updated_roles = user_data.roles -- remove_colors ++ [352605883278163989]
+    updated_roles = user_data.roles -- remove_colors ++ [red]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
@@ -29,83 +23,66 @@ defmodule DiscordSlate.Commands.Color do
 
   def set_color_orange(data) do
     guild_id = Channel.get(data.channel_id).guild_id
+    user_data = Guild.get_member(guild_id, data.author.id)
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
-    Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
-    Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
-    Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
-    
-    Guild.add_member_role(guild_id, data.author.id, 479314401300578344)
+    updated_roles = user_data.roles -- remove_colors ++ [orange]
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
 
   def set_color_yellow(data) do
     guild_id = Channel.get(data.channel_id).guild_id
+    user_data = Guild.get_member(guild_id, data.author.id)
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
-    Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
-    Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
-    Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
-    
-    Guild.add_member_role(guild_id, data.author.id, 486022292745224203)
+    updated_roles = user_data.roles -- remove_colors ++ [yellow]
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
 
   def set_color_green(data) do
     guild_id = Channel.get(data.channel_id).guild_id
+    user_data = Guild.get_member(guild_id, data.author.id)
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
-    Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
-    Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
-    Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
-    
-    Guild.add_member_role(guild_id, data.author.id, 486022159454699540)
+    updated_roles = user_data.roles -- remove_colors ++ [green]
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
 
   def set_color_blue(data) do
     guild_id = Channel.get(data.channel_id).guild_id
+    user_data = Guild.get_member(guild_id, data.author.id)
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
-    Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
-    Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
-    Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
-    
-    Guild.add_member_role(guild_id, data.author.id, 479314520695767040)
+    updated_roles = user_data.roles -- remove_colors ++ [blue]
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
 
   def set_color_purple(data) do
     guild_id = Channel.get(data.channel_id).guild_id
+    user_data = Guild.get_member(guild_id, data.author.id)
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
-    Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
-    Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
-    Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
-
-    Guild.add_member_role(guild_id, data.author.id, 352603354259521536)
+    updated_roles = user_data.roles -- remove_colors ++ [purple]
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
 
   def set_color_none(data) do
     guild_id = Channel.get(data.channel_id).guild_id
+    user_data = Guild.get_member(guild_id, data.author.id)
+    remove_colors = [red, orange, yellow, green, blue, purple]
 
-    Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
-    Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
-    Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
-    Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
-    Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
+    updated_roles = user_data.roles -- remove_colors
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
