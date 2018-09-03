@@ -64,4 +64,53 @@ defmodule DiscordSlate.Commands.Admin do
         end
     end
   end
+
+  def add_color_role(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
+    db = query_data("guilds", guild_id)
+    role_ids = data.mention_roles
+
+    db = case Map.get(db, :color_roles) do
+      nil -> Map.put(db, :color_roles, [])
+      _ -> db
+    end
+
+    case role_ids do
+      [] -> reply "You didn't specify any roles."
+      role_ids ->
+        case db.color_roles do
+          [] ->
+            db = Map.put(db, :color_roles, role_ids)
+            store_data("guilds", guild_id, db)
+            reply "Added roles!"
+            color_roles ->
+            db = Map.put(db, :color_roles, color_roles ++ role_ids |> Enum.uniq)
+            store_data("guilds", guild_id, db)
+            reply "Added administrative roles!"
+        end
+    end
+  end
+
+  def del_color_role(data) do
+    guild_id = Channel.get(data.channel_id).guild_id
+    role_ids = data.mention_roles
+    db = query_data("guilds", guild_id)
+
+    db = case Map.get(db, :color_roles) do
+      nil -> Map.put(db, :color_roles, [])
+      _ -> db
+    end
+
+    case role_ids do
+      [] -> reply "You didn't specify any roles."
+      role_ids ->
+        case db.color_roles do
+          [] -> reply "There aren't any roles to remove..."
+          color_roles ->
+            db = Map.put(db, :color_roles, color_roles -- role_ids |> Enum.uniq)
+            store_data("guilds", guild_id, db)
+            reply "Removed administrative roles."
+        end
+    end
+  end
 end
