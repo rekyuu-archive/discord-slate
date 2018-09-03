@@ -28,6 +28,7 @@ defmodule DiscordSlate.Bot do
       match "!color green",  :set_color_green
       match "!color blue",   :set_color_blue
       match "!color purple", :set_color_purple
+      match "!color none",   :set_color_none
     end
   end
 
