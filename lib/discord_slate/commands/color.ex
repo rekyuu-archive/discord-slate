@@ -15,7 +15,7 @@ defmodule DiscordSlate.Commands.Color do
     user_data = Guild.get_member(guild_id, data.author.id)
     remove_colors = [orange, yellow, green, blue, purple]
 
-    updated_roles = user_data.roles -- remove_colors ++ [red]
+    updated_roles = (user_data.roles -- remove_colors) ++ [red]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
@@ -26,7 +26,7 @@ defmodule DiscordSlate.Commands.Color do
     user_data = Guild.get_member(guild_id, data.author.id)
     remove_colors = [red, yellow, green, blue, purple]
 
-    updated_roles = user_data.roles -- remove_colors ++ [orange]
+    updated_roles = (user_data.roles -- remove_colors) ++ [orange]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
@@ -37,7 +37,7 @@ defmodule DiscordSlate.Commands.Color do
     user_data = Guild.get_member(guild_id, data.author.id)
     remove_colors = [red, orange, green, blue, purple]
 
-    updated_roles = user_data.roles -- remove_colors ++ [yellow]
+    updated_roles = (user_data.roles -- remove_colors) ++ [yellow]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
@@ -48,7 +48,7 @@ defmodule DiscordSlate.Commands.Color do
     user_data = Guild.get_member(guild_id, data.author.id)
     remove_colors = [red, orange, yellow, blue, purple]
 
-    updated_roles = user_data.roles -- remove_colors ++ [green]
+    updated_roles = (user_data.roles -- remove_colors) ++ [green]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
@@ -59,7 +59,7 @@ defmodule DiscordSlate.Commands.Color do
     user_data = Guild.get_member(guild_id, data.author.id)
     remove_colors = [red, orange, yellow, green, purple]
 
-    updated_roles = user_data.roles -- remove_colors ++ [blue]
+    updated_roles = (user_data.roles -- remove_colors) ++ [blue]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
@@ -70,7 +70,7 @@ defmodule DiscordSlate.Commands.Color do
     user_data = Guild.get_member(guild_id, data.author.id)
     remove_colors = [red, orange, yellow, green, blue]
 
-    updated_roles = user_data.roles -- remove_colors ++ [purple]
+    updated_roles = (user_data.roles -- remove_colors) ++ [purple]
     Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
