@@ -22,7 +22,7 @@ defmodule DiscordSlate.Commands.Color do
     remove_colors = ["479314401300578344", "486022292745224203", "486022159454699540", "479314520695767040", "352603354259521536"]
 
     updated_roles = user_data.roles -- remove_colors ++ [352605883278163989]
-    Guild.modify_member(guild_id, data.author.id, updated_roles)
+    Guild.modify_member(guild_id, data.author.id, [roles: updated_roles])
 
     reply "Done!"
   end
