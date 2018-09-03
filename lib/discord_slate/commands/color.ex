@@ -4,11 +4,11 @@ defmodule DiscordSlate.Commands.Color do
   alias Din.Resources.{Channel, Guild}
   
   def red, do: "352605883278163989"
-  def orange, do: "352605883278163989"
-  def yellow, do: "352605883278163989"
-  def green, do: "352605883278163989"
-  def blue, do: "352605883278163989"
-  def purple, do: "352605883278163989"
+  def orange, do: "479314401300578344"
+  def yellow, do: "486022292745224203"
+  def green, do: "486022159454699540"
+  def blue, do: "479314520695767040"
+  def purple, do: "352603354259521536"
 
   def set_color_red(data) do
     guild_id = Channel.get(data.channel_id).guild_id
