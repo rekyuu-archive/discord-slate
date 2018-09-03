@@ -17,12 +17,13 @@ defmodule DiscordSlate.Commands.Color do
   def set_color_red(data) do
     guild_id = Channel.get(data.channel_id).guild_id
     
-    Guild.add_member_role(guild_id, data.author.id, 352605883278163989)
     Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
     Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
     Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
     Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
     Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
+
+    Guild.add_member_role(guild_id, data.author.id, 352605883278163989)
 
     reply "Done!"
   end
@@ -31,11 +32,12 @@ defmodule DiscordSlate.Commands.Color do
     guild_id = Channel.get(data.channel_id).guild_id
 
     Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
-    Guild.add_member_role(guild_id, data.author.id, 479314401300578344)
     Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
     Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
     Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
     Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
+    
+    Guild.add_member_role(guild_id, data.author.id, 479314401300578344)
 
     reply "Done!"
   end
@@ -45,10 +47,11 @@ defmodule DiscordSlate.Commands.Color do
 
     Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
     Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
-    Guild.add_member_role(guild_id, data.author.id, 486022292745224203)
     Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
     Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
     Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
+    
+    Guild.add_member_role(guild_id, data.author.id, 486022292745224203)
 
     reply "Done!"
   end
@@ -59,9 +62,10 @@ defmodule DiscordSlate.Commands.Color do
     Guild.remove_member_role(guild_id, data.author.id, 352605883278163989)
     Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
     Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
-    Guild.add_member_role(guild_id, data.author.id, 486022159454699540)
     Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
     Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
+    
+    Guild.add_member_role(guild_id, data.author.id, 486022159454699540)
 
     reply "Done!"
   end
@@ -73,8 +77,9 @@ defmodule DiscordSlate.Commands.Color do
     Guild.remove_member_role(guild_id, data.author.id, 479314401300578344)
     Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
     Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
-    Guild.add_member_role(guild_id, data.author.id, 479314520695767040)
     Guild.remove_member_role(guild_id, data.author.id, 352603354259521536)
+    
+    Guild.add_member_role(guild_id, data.author.id, 479314520695767040)
 
     reply "Done!"
   end
@@ -87,6 +92,7 @@ defmodule DiscordSlate.Commands.Color do
     Guild.remove_member_role(guild_id, data.author.id, 486022292745224203)
     Guild.remove_member_role(guild_id, data.author.id, 486022159454699540)
     Guild.remove_member_role(guild_id, data.author.id, 479314520695767040)
+    
     Guild.add_member_role(guild_id, data.author.id, 352603354259521536)
 
     reply "Done!"
